@@ -2,11 +2,19 @@
   "name": "productservice",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "migrate": "node scripts/migrate.js",
+    "seed": "node scripts/seed.js"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "knex": "^0.95.4",
+    "morgan": "^1.10.0",
+    "pg": "^8.6.0"
+  }
 }
