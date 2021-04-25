@@ -18,8 +18,8 @@ services:
       POSTGRES_PASSWORD: 123
     volumes: 
       - data:/var/lib/postgresql/data
-      - ./productservice/sql/create-table.sql:/docker-entrypoint-initdb.d/create_table.sql
-      - ./productservice/sql/fill-table.sql:/docker-entrypoint-initdb.d/fill_table.sql
+      - ./sql/create-table.sql:/docker-entrypoint-initdb.d/create_table.sql
+      - ./sql/fill-table.sql:/docker-entrypoint-initdb.d/fill_table.sql
 
 volumes: 
   data:
