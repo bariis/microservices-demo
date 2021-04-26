@@ -1,20 +1,11 @@
 const { Client } = require('pg');
+const { Pool } = require('pg');
 
-const client = new Client ({
+const pool = new Pool ({
     user: 'postgres',
     password: '123',
     host: 'db',
     database: 'microservice'
 });
 
-client.on('connect', () => {
-    console.log('Connection established');
-});
-
-client.on('end', () => {
-    console.log('Connection closed');
-});
-
-module.exports = client;
-
-
+module.exports = pool;
