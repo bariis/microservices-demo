@@ -1,12 +1,12 @@
 const pool = require('./database/dbClient');
 
 async function getProducts(req, res) {
-    let result;
+    let products;
     try {
         const client = await pool.connect();
-        result = await client.query('SELECT * FROM product');
+        products = await client.query('SELECT * FROM product');
         client.release();
-        res.status(200).json(result.rows);
+        res.status(200).json(products.rows);
     } catch(err) {
         console.error(`Error fetching product data: ${err}`);
         res.status(500).send();
