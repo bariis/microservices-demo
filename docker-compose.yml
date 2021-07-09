@@ -8,10 +8,10 @@ services:
       - '5000:5000'
     depends_on: 
       - 'db'
-  db:
+  product-db:
     image: 'postgres:13-alpine'
     restart: always
-    container_name: postgre-db
+    container_name: product-db
     environment:
       POSTGRES_DB: microservice
       POSTGRES_USER: postgres 
