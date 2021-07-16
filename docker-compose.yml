@@ -4,23 +4,32 @@ services:
   productservice:
     build: ./productservice
     container_name: productservice
-    ports: 
+    ports:
       - '5000:5000'
-    depends_on: 
-      - 'db'
-      -
-  product-db:
+    depends_on:
+      - 'database'
+
+  identityservice:
+    build:
+      ./identityservice
+    container_name: identityservice
+    ports:
+    - '5002:5002'
+    depends_on:
+      - 'database'
+
+  database:
     image: 'postgres:13-alpine'
     restart: always
-    container_name: product-db
+    container_name: database
     environment:
       POSTGRES_DB: microservice
-      POSTGRES_USER: postgres 
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123
-    volumes: 
+    volumes:
       - data:/var/lib/postgresql/data
       - ./sql/create-table.sql:/docker-entrypoint-initdb.d/create_table.sql
       - ./sql/fill-table.sql:/docker-entrypoint-initdb.d/fill_table.sql
 
-volumes: 
+volumes:
   data:
