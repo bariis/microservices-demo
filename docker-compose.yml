@@ -41,5 +41,13 @@ services:
       - ./sql/create-table.sql:/docker-entrypoint-initdb.d/create_table.sql
       - ./sql/fill-table.sql:/docker-entrypoint-initdb.d/fill_table.sql
 
+  fake_api:
+    image: jaxgeller/lwan
+    container_name: fake_api
+    volumes:
+      - ./file_server:/lwan/wwwroot
+    ports:
+      - "8000:8080"
+
 volumes:
   data:
