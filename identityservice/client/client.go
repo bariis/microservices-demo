@@ -18,3 +18,7 @@ func (c *Client) DoesExist(email string) bool {
 	return client.Email != ""
 }
 
+func (c *Client) Create(client *Client) (*Client, error) {
+	err := db.Database.Create(&client).Error
+	return client, err
+}
