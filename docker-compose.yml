@@ -49,5 +49,13 @@ services:
     ports:
       - "8000:8080"
 
+  redis:
+    image: 'redis:alpine'
+    container_name: redis_cache
+    ports:
+    - '6379:6379'
+    restart: unless-stopped
+
+
 volumes:
   data:
