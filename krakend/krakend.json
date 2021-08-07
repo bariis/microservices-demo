@@ -111,6 +111,36 @@
           "disable_host_sanitize": false
         }
       ]
+    },
+    {
+      "endpoint": "/get",
+      "method": "GET",
+      "output_encoding": "json",
+      "headers_to_pass": [
+        "Authorization"
+      ],
+      "extra_config": {
+        "github.com/devopsfaith/krakend-jose/validator": {
+          "alg": "HS256",
+          "audience": [
+            "http://krakend:5000"
+          ],
+          "issuer": "http://identityservice:5002",
+          "jwk-url": "http://fake_api:8080/jwk/symmetric.json",
+          "disable_jwk_security": true
+        }
+      },
+      "backend": [
+        {
+          "url_pattern": "/api/v1/get-cart",
+          "encoding": "json",
+          "method": "GET",
+          "host": [
+            "http://cartservice:5001"
+          ],
+          "disable_host_sanitize": false
+        }
+      ]
     }
   ]
 }
