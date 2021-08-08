@@ -65,11 +65,13 @@ func (s *server) handleEmptyCart(w http.ResponseWriter, r *http.Request) {
 
 	if err := EmptyCart(s.redisClient, token); err != nil {
 		http.Error(w, err.Error(), http.StatusOK)
+		return
 	}
 
 	jsonResponse, err := json.Marshal(map[string]string{"message": "cart is deleted successfully"})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	sendResponse(w, jsonResponse, http.StatusOK)
