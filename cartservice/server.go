@@ -1,41 +1,42 @@
 package main
 
 import (
-	"github.com/go-redis/cache/v8"
 	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"time"
 )
 
 type server struct {
-	redis  redisCache
-	router *mux.Router
-}
-
-type redisCache struct {
+	router      *mux.Router
 	redisClient *redis.Client
-	redisCache  *cache.Cache
 }
 
 func (s *server) initializeRoutes() {
-	s.router.HandleFunc("/add", s.handleAddCart).Methods("POST")
+	s.router.HandleFunc("/api/v1/add-cart", s.handleAddCart).Methods("POST")
+	s.router.HandleFunc("/api/v1/get-cart", s.handleGetCart).Methods("GET")
+	s.router.HandleFunc("/api/v1/empty-cart", s.handleEmptyCart).Methods("DELETE")
 }
 
 func (s *server) Initialize() {
-	s.redis.redisClient = redis.NewClient(&redis.Options{
-		Addr: "redis:6379",
-	})
-
-	s.redis.redisCache = cache.New(&cache.Options{
-		Redis: s.redis.redisClient,
+	s.redisClient = redis.NewClient(&redis.Options{
+		Addr:     "redis:6379",
+		Password: "",
+		DB:       0,
 	})
 
 	s.router = mux.NewRouter()
-
 	s.initializeRoutes()
 }
 
 func (s *server) Run() {
-	log.Fatal(http.ListenAndServe(":5001", s.router))
+	srv := &http.Server{
+		Addr:         "cartservice:5001",
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		Handler:      s.router,
+	}
+
+	log.Fatal(srv.ListenAndServe())
 }
