@@ -11,6 +11,23 @@ services:
     depends_on:
       - fake_api
 
+  catalogservice:
+    build: ./productservice
+    container_name: catalogservice
+    ports:
+      - '5000:5000'
+    depends_on:
+      - 'catalog-db'
+
+  cartservice:
+    build: ./cartservice
+    container_name: cartservice
+    ports:
+      - '5001:5001'
+    depends_on:
+      - 'redis'
+    command: go run .
+
   identityservice:
     build:
       ./identityservice
