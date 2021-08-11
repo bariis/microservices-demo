@@ -9,6 +9,3 @@ VALUES (1001, 'Product 1', 'A product', 12.99),
        (1008, 'Product 8', 'A product', 20.99),
        (1009, 'Product 9', 'A product', 21.99),
        (1010, 'Product 1', 'A product', 22.99);
-
-INSERT INTO client (full_name, email, password)
-VALUES ('Smith', 'john.smith@example.com', '123123');
