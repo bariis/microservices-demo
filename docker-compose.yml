@@ -48,7 +48,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123
     volumes:
-      - data:/var/lib/postgresql/data
+      - identity-data:/var/lib/postgresql/data
       - ./sql/create-user-table.sql:/docker-entrypoint-initdb.d/create_table.sql
       - ./sql/fill-user-table.sql:/docker-entrypoint-initdb.d/fill_table.sql
 
@@ -63,7 +63,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123
     volumes:
-      - data:/var/lib/postgresql/data
+      - catalog-data:/var/lib/postgresql/data
       - ./sql/create-product-table.sql:/docker-entrypoint-initdb.d/create_table.sql
       - ./sql/fill-product-table.sql:/docker-entrypoint-initdb.d/fill_table.sql
 
@@ -84,4 +84,5 @@ services:
 
 
 volumes:
-  data:
+  catalog-data:
+  identity-data:
