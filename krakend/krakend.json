@@ -56,6 +56,10 @@
       "endpoint": "/add",
       "method": "POST",
       "output_encoding": "json",
+      "querystring_params": [
+        "id",
+        "quantity"
+      ],
       "headers_to_pass": [
         "Authorization"
       ],
