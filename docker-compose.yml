@@ -11,35 +11,44 @@ services:
     depends_on:
       - fake_api
 
-  productservice:
-    build: ./productservice
-    container_name: productservice
-    ports:
-      - '5000:5000'
-    depends_on:
-      - 'database'
-
   identityservice:
     build:
       ./identityservice
     container_name: identityservice
     ports:
-    - '5002:5002'
+      - '5002:5002'
     depends_on:
-      - 'database'
+      - 'user-db'
 
-  database:
+  user-db:
     image: 'postgres:13-alpine'
     restart: always
-    container_name: database
+    container_name: user-db
+    ports:
+      - '5960:5432'
     environment:
-      POSTGRES_DB: microservice
+      POSTGRES_DB: identity
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123
     volumes:
       - data:/var/lib/postgresql/data
-      - ./sql/create-table.sql:/docker-entrypoint-initdb.d/create_table.sql
-      - ./sql/fill-table.sql:/docker-entrypoint-initdb.d/fill_table.sql
+      - ./sql/create-user-table.sql:/docker-entrypoint-initdb.d/create_table.sql
+      - ./sql/fill-user-table.sql:/docker-entrypoint-initdb.d/fill_table.sql
+
+  catalog-db:
+    image: 'postgres:13-alpine'
+    restart: always
+    container_name: catalog-db
+    ports:
+      - '5961:5432'
+    environment:
+      POSTGRES_DB: catalog
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+    volumes:
+      - data:/var/lib/postgresql/data
+      - ./sql/create-product-table.sql:/docker-entrypoint-initdb.d/create_table.sql
+      - ./sql/fill-product-table.sql:/docker-entrypoint-initdb.d/fill_table.sql
 
   fake_api:
     image: jaxgeller/lwan
@@ -53,7 +62,7 @@ services:
     image: 'redis:alpine'
     container_name: redis_cache
     ports:
-    - '6379:6379'
+      - '6379:6379'
     restart: unless-stopped
 
 
