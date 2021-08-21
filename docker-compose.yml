@@ -37,6 +37,14 @@ services:
     depends_on:
       - 'user-db'
 
+  checkoutservice:
+    build: ./checkoutservice
+    container_name: checkoutservice
+    ports:
+    - '5003:5003'
+    depends_on:
+      - 'rabbitmq'
+
   user-db:
     image: 'postgres:13-alpine'
     restart: always
