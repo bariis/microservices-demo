@@ -92,15 +92,21 @@ func EmptyCart(redis *redis.Client, token string) error {
 }
 
 // retrieves the cart
-func GetCart(redis *redis.Client, token string) (map[string]string, error) {
+func GetCart(redis *redis.Client, token string) (map[string][]interface{}, error) {
 	ctx := context.Background()
+	allProducts := make(map[string][]interface{})
 
 	cartId, err := getUserIdFromToken(token)
 	if err != nil {
 		return nil, fmt.Errorf("token: %v", err)
 	}
-	cmd := redis.HGetAll(ctx, cartId).Val()
-	log.Printf("the items of the card with id %v has been retrieved", cartId)
 
-	return cmd, nil
+	keys := redis.SMembers(ctx, cartId).Val()
+
+	for _, productKey := range keys {
+		item := redis.HGetAll(ctx, productKey).Val()
+		allProducts[cartId] = append(allProducts[cartId], item)
+	}
+	log.Printf("the items of the card with id %v has been retrieved", cartId)
+	return allProducts, nil
 }
