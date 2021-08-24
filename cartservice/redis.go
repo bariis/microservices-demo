@@ -44,20 +44,24 @@ func AddItem(redis *redis.Client, productName, productId string, productQuantity
 	productIdentity := cartId + ":" + productId
 	cmd := redis.Exists(ctx, cartId)
 	if cmd.Val() == 0 {
+		log.Printf("BOYLE BIR KULLANICI BASKETI YOK\n")
 		redis.HSet(ctx, productIdentity, item)
 		redis.SAdd(ctx, cartId, cartId+":"+productId)
-		log.Printf("the cart with id %v created and the product with id %v added.\n", productId)
+		log.Printf("the cart with id %v created and the product with id %s added.\n", cartId, productName)
 	} else {
 		// If the item exists, we update its quantity
 		if cmd := redis.SIsMember(ctx, cartId, productIdentity); cmd.Val() {
+			log.Printf("EVET MEMBER %s\n", productName)
 			// perform the operation on quantitiy. if current quantity of the product equals to zero we delete it from the cart
 			if currentQuantity := redis.HIncrBy(ctx, productIdentity, "quantity", int64(productQuantity)); currentQuantity.Val() == 0 {
-				log.Printf("the product with id %v has been updated\n", productId)
+				log.Printf("the product with id %s has been updated\n", productName)
 				redis.SRem(ctx, cartId, productIdentity)
 				redis.Del(ctx, productIdentity)
 			}
 		} else {
+			redis.HSet(ctx, productIdentity, item)
 			redis.SAdd(ctx, cartId, productIdentity)
+			log.Printf("the product with name %s added to the cart\n", productName)
 		}
 	}
 
@@ -73,10 +77,16 @@ func EmptyCart(redis *redis.Client, token string) error {
 
 	cartId, err := getUserIdFromToken(token)
 	if err != nil {
-		return fmt.Errorf("token: %v", err)
+		return fmt.Errorf("token: %v\n", err)
 	}
 
-	redis.Del(ctx, cartId)
+	keys := redis.SMembers(ctx, cartId).Val()
+
+	for _, productKey := range keys {
+		fmt.Println(productKey)
+		redis.Del(ctx, productKey)
+	}
+	redis.Expire(ctx, cartId, 500 * time.Millisecond)
 	log.Printf("the cart with id %v has been deleted\n", cartId)
 	return nil
 }
