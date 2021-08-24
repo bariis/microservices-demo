@@ -44,14 +44,12 @@ func AddItem(redis *redis.Client, productName, productId string, productQuantity
 	productIdentity := cartId + ":" + productId
 	cmd := redis.Exists(ctx, cartId)
 	if cmd.Val() == 0 {
-		log.Printf("BOYLE BIR KULLANICI BASKETI YOK\n")
 		redis.HSet(ctx, productIdentity, item)
 		redis.SAdd(ctx, cartId, cartId+":"+productId)
 		log.Printf("the cart with id %v created and the product with id %s added.\n", cartId, productName)
 	} else {
 		// If the item exists, we update its quantity
 		if cmd := redis.SIsMember(ctx, cartId, productIdentity); cmd.Val() {
-			log.Printf("EVET MEMBER %s\n", productName)
 			// perform the operation on quantitiy. if current quantity of the product equals to zero we delete it from the cart
 			if currentQuantity := redis.HIncrBy(ctx, productIdentity, "quantity", int64(productQuantity)); currentQuantity.Val() == 0 {
 				log.Printf("the product with id %s has been updated\n", productName)
