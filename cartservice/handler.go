@@ -14,8 +14,10 @@ func sendResponse(w http.ResponseWriter, data []byte, status int) {
 
 func (s *server) handleAddCart(w http.ResponseWriter, r *http.Request) {
 	type product struct {
-		Id       string `json:"id"`
-		Quantity int    `json:"quantity"`
+		Id       string  `json:"id"`
+		Name     string  `json:"name"`
+		Price    float64 `json:"price"`
+		Quantity int     `json:"quantity"`
 	}
 	var p product
 
@@ -28,7 +30,7 @@ func (s *server) handleAddCart(w http.ResponseWriter, r *http.Request) {
 
 	token := r.Header.Get("Authorization")
 
-	if err := AddItem(s.redisClient, p.Id, p.Quantity, token); err != nil {
+	if err := AddItem(s.redisClient, p.Name, p.Id, p.Quantity, p.Price, token); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
