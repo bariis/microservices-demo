@@ -1,5 +1,9 @@
 version: '3.9'
 
+networks:
+  app-tier:
+    driver: bridge
+
 services:
   krakend:
     image: devopsfaith/krakend:1.3.0
@@ -10,6 +14,8 @@ services:
       - "8080:8080"
     depends_on:
       - fake_api
+    networks:
+      - app-tier
 
   catalogservice:
     build: ./productservice
@@ -18,6 +24,8 @@ services:
       - '5000:5000'
     depends_on:
       - 'catalog-db'
+    networks:
+      - app-tier
 
   cartservice:
     build: ./cartservice
@@ -27,6 +35,8 @@ services:
     depends_on:
       - 'redis'
     command: go run .
+    networks:
+      - app-tier
 
   identityservice:
     build:
@@ -36,6 +46,8 @@ services:
       - '5002:5002'
     depends_on:
       - 'user-db'
+    networks:
+      - app-tier
 
   checkoutservice:
     build: ./checkoutservice
@@ -44,6 +56,28 @@ services:
     - '5003:5003'
     depends_on:
       - 'rabbitmq'
+    networks:
+      - app-tier
+      
+  paymentservice:
+    build: ./paymentservice
+    container_name: paymentservice
+    ports:
+    - '5004:5004'
+    depends_on:
+      - 'rabbitmq'
+    networks:
+      - app-tier
+
+  emailservice:
+    build: ./emailsercice
+    container_name: emailservice
+    ports:
+    - '5005:5005'
+    depends_on:
+      - 'rabbitmq'
+    networks:
+      - app-tier
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
@@ -55,7 +89,8 @@ services:
     - ./rabbitmq/etc/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
     - ./rabbitmq/data:/var/lib/rabbitmq/mnesia/rabbit@my-rabbit
     - ./rabbitmq/logs:/var/log/rabbitmq/log
-
+    networks:
+      - app-tier
 
   user-db:
     image: 'postgres:13-alpine'
@@ -71,6 +106,8 @@ services:
       - identity-data:/var/lib/postgresql/data
       - ./sql/create-user-table.sql:/docker-entrypoint-initdb.d/create_table.sql
       - ./sql/fill-user-table.sql:/docker-entrypoint-initdb.d/fill_table.sql
+    networks:
+      - app-tier
 
   catalog-db:
     image: 'postgres:13-alpine'
@@ -86,6 +123,8 @@ services:
       - catalog-data:/var/lib/postgresql/data
       - ./sql/create-product-table.sql:/docker-entrypoint-initdb.d/create_table.sql
       - ./sql/fill-product-table.sql:/docker-entrypoint-initdb.d/fill_table.sql
+    networks:
+      - app-tier
 
   fake_api:
     image: jaxgeller/lwan
@@ -94,6 +133,8 @@ services:
       - ./file_server:/lwan/wwwroot
     ports:
       - "8000:8080"
+    networks:
+      - app-tier
 
   redis:
     image: 'redis:alpine'
@@ -101,7 +142,8 @@ services:
     ports:
       - '6379:6379'
     restart: unless-stopped
-
+    networks:
+      - app-tier
 
 volumes:
   catalog-data:
