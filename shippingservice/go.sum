@@ -1,0 +1,4 @@
+github.com/bariis/rabbitmq-fanout-library v0.0.0-20210821131242-daf729a351f2 h1:ctJ4PpJA7cghgZ98DtVY0H8TYtv01GlevGHehnnDtp8=
+github.com/bariis/rabbitmq-fanout-library v0.0.0-20210821131242-daf729a351f2/go.mod h1:WEUjP4vOJiFbXM7MK1eCxPC7vnXNk8nvGUFUyemTZLI=
+github.com/streadway/amqp v1.0.0 h1:kuuDrUJFZL1QYL9hUNuCxNObNzB0bV/ZG5jV3RWAQgo=
+github.com/streadway/amqp v1.0.0/go.mod h1:AZpEONHx3DKn8O/DFsRAY58/XVQiIPMTMB1SddzLXVw=
